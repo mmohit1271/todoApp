@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "todoapp:latest"
-        DOCKER_REGISTRY = "mmohit1271/todoapp:latest" // or use your own registry
+        DOCKER_IMAGE = "mmohit1271/todoApp:latest"
+        DOCKER_REGISTRY = "docker.io" // or use your own registry
     }
 
     stages {
