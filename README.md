@@ -1,5 +1,4 @@
-# Create a text file with the same README content for the To-Do app
-readme_content = """
+
 To-Do App
 
 This is a simple To-Do application built using **Node.js** and **Express**, containerized using **Docker**, and deployed with **Jenkins**. The app allows users to view and manage tasks in a simple list format.
