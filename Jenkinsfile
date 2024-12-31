@@ -7,18 +7,24 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/mmohit1271/todoApp.git'
+                git branch: 'master', url: 'https://github.com/mmohit1271/todoApp.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Node.js and Dependencies') {
             steps {
                 script {
-                    // Ensure Node.js is available and install dependencies
-                    sh 'node -v || curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && sudo apt-get install -y nodejs'
-                    sh 'npm install'
+                    // Ensure Node.js is installed
+                    sh '''
+                        if ! [ -x "$(command -v node)" ]; then
+                            curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+                            apt-get install -y nodejs
+                        fi
+                    '''
+                    // Navigate to the correct directory and install dependencies
+                    sh 'cd /var/lib/jenkins/workspace/todoApp && npm install'
                 }
             }
         }
@@ -26,8 +32,8 @@ pipeline {
         stage('Test Application') {
             steps {
                 script {
-                    // Run tests as per package.json
-                    sh 'npm test'
+                    // Run tests defined in package.json
+                    sh 'cd /var/lib/jenkins/workspace/todoApp && npm test'
                 }
             }
         }
@@ -35,8 +41,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image from the updated Dockerfile
-                    sh "docker build -t $DOCKER_IMAGE ."
+                    // Build Docker image
+                    sh "cd /var/lib/jenkins/workspace/todoApp && docker build -t $DOCKER_IMAGE ."
                 }
             }
         }
@@ -54,8 +60,8 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 script {
-                    // Deploy application using Docker Compose
-                    sh 'docker-compose up -d'
+                    // Deploy using Docker Compose
+                    sh 'cd /var/lib/jenkins/workspace/todoApp && docker-compose up -d'
                 }
             }
         }
