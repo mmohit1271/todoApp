@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "todoapp:latest"
         DOCKER_REGISTRY = "mmohit1271/todoapp:latest" // or use your own registry
+        DOCKER_REGISTRY = "docker.io"
     }
 
     stages {
