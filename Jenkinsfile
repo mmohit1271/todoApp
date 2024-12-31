@@ -15,21 +15,28 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                script {
+                    // Ensure Node.js is available and install dependencies
+                    sh 'node -v || curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && sudo apt-get install -y nodejs'
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Test Application') {
             steps {
-                // Run tests (assuming tests are defined in package.json)
-                sh 'npm test'
+                script {
+                    // Run tests as per package.json
+                    sh 'npm test'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t $DOCKER_IMAGE .'
+                    // Build Docker image from the updated Dockerfile
+                    sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
         }
@@ -37,26 +44,29 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh 'echo $password | docker login -u $user --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE'
+                    // Push Docker image to Docker Hub
+                    sh "docker login -u mmohit1271 -p ${password}"
+                    sh "docker push $DOCKER_IMAGE"
                 }
             }
         }
 
         stage('Deploy Application') {
             steps {
-                sh 'docker-compose down'
-                sh 'docker-compose up -d'
+                script {
+                    // Deploy application using Docker Compose
+                    sh 'docker-compose up -d'
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Deployment completed successfully!'
+            echo 'Application deployed successfully!'
         }
         failure {
-            echo 'Deployment failed.'
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
