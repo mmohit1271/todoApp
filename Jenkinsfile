@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "todoApp:latest"
+        DOCKER_IMAGE = "todoapp:latest"
         DOCKER_REGISTRY = "docker.io" // or use your own registry
     }
 
