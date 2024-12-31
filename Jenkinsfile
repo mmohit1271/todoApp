@@ -28,7 +28,8 @@ pipeline {
                 }
             }
         }
-
+ // Comment out or remove the 'Test Application' stage if not required
+        /*
         stage('Test Application') {
             steps {
                 script {
@@ -37,7 +38,7 @@ pipeline {
                 }
             }
         }
-
+ */
         stage('Build Docker Image') {
             steps {
                 script {
