@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "mmohit1271/todoapp:latest"
-        DOCKER_REGISTRY = "hub.docker.com" // or use your own registry
+        DOCKER_REGISTRY = "hub.docker.com"
     }
 
     stages {
@@ -13,36 +13,40 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                // Run tests (assuming tests are defined in package.json)
+                sh 'npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image from the Dockerfile
                     sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
 
-        stage('Login to Docker Hub') {
-            steps {
-                sh 'docker login -u mmohit1271 -p $password'
-                }
-        }
-
-        stage('Push Image to Docker Hub') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    // Push Docker image to Docker Hub
+                    sh 'echo $password | docker login -u $user --password-stdin'
                     sh 'docker push $DOCKER_IMAGE'
                 }
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Deploy Application') {
             steps {
-                script {
-                    // Deploy the app using Docker Compose
-                    sh 'docker-compose up -d'
-                }
+                sh 'docker-compose down'
+                sh 'docker-compose up -d'
             }
         }
     }
