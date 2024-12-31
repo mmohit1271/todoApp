@@ -1,8 +1,24 @@
-version: '3'
+version: '3.8'
+
 services:
   todo-app:
-    build: .
+    image: mmohit1271/todoapp:latest
+    container_name: todo-app
     ports:
       - "3000:3000"
-    container_name: todoApp
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/todoApp
+      - JWT_SECRET=your_jwt_secret_key
+    depends_on:
+      - mongo
 
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
